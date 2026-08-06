@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Paint</title>
     <style>
         body {
             text-align: center;
@@ -10,14 +11,13 @@
         }
         canvas {
             border: 2px solid black;
-            cursor: crosshair;
+            cursor: crosshair; 
         }
     </style>
-    <title>Mini Paint</title>
 </head>
 <body>
-    <h1>Mini paint</h1>
-    <input type="color" id="cor">
+    <h1>Mini Paint</h1>
+    <input type="color" id="cor"> 
     <button id="limpar">Limpar</button>
     <button id="exportar">Exportar</button>
     <br>
@@ -28,21 +28,41 @@
         const tela = document.getElementById("tela");
         const ctx = tela.getContext("2d");
 
-        let desenhado = false;
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, tela.width, tela.heigh);
 
-        tela.onmousedown = () => desenhado = true;
-        tela.onmouseup = () => desenhado = false;
+        let desenhando = false;
+
+        tela.onmousedown = () => {
+            desenhando = true;
+            ctx.beginPath();
+        }
+        tela.onmouseup = () => desenhando = false;
 
         tela.onmousemove = e => {
-            if (!desenhado) return;
-
+            if (!desenhando) return;
             ctx.strokeStyle = cor.value;
             ctx.lineTo(e.offsetX, e.offsetY);
             ctx.stroke();
+        };
+
+        tela.onmouseleave = () => {
+            desenhando = false;
+            ctx.beginPath();
         }
 
-        limpar.onclick = () =>
-        ctx.clearRect(0, 0, tela.width, tela.height);
+       limpar.onclick = () => {
+    ctx.clearRect(0, 0, tela.width, tela.height);
+    ctx.beginPath(); // Reinicia o caminho do desenho
+};
+
+// Exportar imagem
+exportar.onclick = () => {
+    const link = document.createElement("a");
+    link.download = "desenho.png";
+    link.href = tela.toDataURL("image/png");
+    link.click();
+};
     </script>
 </body>
 </html>
